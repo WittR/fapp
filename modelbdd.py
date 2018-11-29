@@ -1,11 +1,11 @@
 import pymongo
 import datetime
 from . import models
-import config
+from .views import app
 
 
 def inscriptionUser(user):
-    client = pymongo.MongoClient(config.DATABASE)
+    client = pymongo.MongoClient(app.config['DATABASE'])
     db = client.Faidherbe
     now = datetime.datetime.now()
     print("mail :" + str(user.mail))
