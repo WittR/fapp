@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+
   <meta charset="utf-8">
   <title>TheEvent - Bootstrap Event Template</title>
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
@@ -36,7 +37,6 @@
 </head>
 
 <body>
-
   <!--==========================
     Header
   ============================-->
@@ -101,9 +101,12 @@
 					{% endfor %}
 				</select>
               </div>
-			    <div class="form-group col-md-3">
-                <input type="text" class="form-control" name="integration" id="integration" placeholder="Votre intégration" data-rule="minlen:0" data-msg="Please enter your intégration" />
-                <div class="validation"></div>
+			  <div class="form-group col-md-3">
+					<input id="inputEcoles" list="ecoles">
+					<datalist id="ecoles">
+					<option value="HAHAHAHA"></option>
+					</datalist>
+
               </div>
             </div>
 			<div class="form-row">
@@ -116,6 +119,8 @@
 					<div class="validation"></div>
 				</div>
 			</div>
+			
+			
             <div class="text-center"><button type="submit">S'inscrire</button></div>
           </form>
         </div>
@@ -219,6 +224,30 @@
 
   <!-- Template Main Javascript File -->
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <script>
+	$(document).ready(function(){
+    $('#inputEcoles').on('input', function () {
+		var inputecoles = $('#inputEcoles').val();
+		var urlecoles = 'get/getecoles?input=' + inputecoles
+		//alert(urlecoles);
+		$.ajax(
+		{
+            url: urlecoles,
+            type: 'GET',
+			success: function(data){
+				json = JSON.parse(data);
+				$('#ecoles').empty();
+				for (var x in json.listecole) {
+					$('#ecoles').append('<option value="'+json.listecole[x]+'">'+json.listecole[x]+'</option>');
+				}
+			}
+        });
+    	
+
+    });
+});
+</script>
+  
 </body>
 
 </html>

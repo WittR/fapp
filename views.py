@@ -1,6 +1,7 @@
 from flask import *
 from flask_login import LoginManager, login_user, login_required
 import pymongo
+from bson.json_util import dumps
 
 app = Flask(__name__)
 app.config.from_object('config')
@@ -62,6 +63,19 @@ def inscription():
     user.integration = data.get('integration')
     print(user)
     return modelbdd.inscriptionUser(user)
+
+
+@app.route('/get/getecoles', methods=['GET'])
+def get_ecoles():
+    inputecole = ".*" + request.args.get('input') +'.*'
+    print(inputecole)
+    inputecole = {"nom": {'$regex': inputecole,"$options": "i"}}
+    print(inputecole)
+    results = db.Ecoles.find(inputecole).limit(10)
+    listeecole = []
+    for x in list(results):
+        listeecole.append(x['nom'])
+    return json.dumps({'status': 'OK', 'listecole': listeecole})
 
 
 @loginManager.user_loader
