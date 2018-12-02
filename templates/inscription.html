@@ -57,17 +57,16 @@
       </nav><!-- #nav-menu-container -->
     </div>
   </header><!-- #header -->
-  
-    <section id="intro">
+    <!--==========================
+      Intro Section
+    ============================-->
+      <section id="intro">
     <div class="intro-container wow fadeIn">
       <h1 class="mb-4 pb-0">L'Association<br><span>du cul</span> des anciens</h1>
       <p class="mb-4 pb-0">L'endroit où on feuillette l'album de Mamie</p>
-      <a href="https://www.youtube.com/watch?v=kTkMUVBknEg" class="venobox play-btn mb-4" data-vbtype="video"
-        data-autoplay="true"></a>
       <!-- <a href="#about" class="about-btn scrollto">About The Event</a> -->
     </div>
   </section>
-
     <!--==========================
       Contact Section
     ============================-->
@@ -79,57 +78,44 @@
           <h2>L'inscription</h2>
           <p>Tout commence quelque part.</p>
         </div>
-
+		<center><h4>Vous êtes sur le point de faire le grand saut, nous avons besoin de ces quelques informations pour vous inscrire.</h4></center>
         <div class="form">
-          <div id="sendmessage">Bravo le veau !</div>
+          <!-- <div id="sendmessage">Bravo le veau !</div> -->
           <div id="errormessage"></div>
-          <form action="" method="post" role="form" class="contactForm">
+          <form action="" method="post" role="form" class="registrationForm">
             <div class="form-row">
               <div class="form-group col-md-6">
-                <input type="text" name="firstname" class="form-control" id="firstname" placeholder="Votre prénom" data-rule="minlen:0" data-msg="Please enter your firstname" />
+                <input type="text" name="firstname" class="form-control" id="firstname" placeholder="Votre prénom" data-rule="minlen:1" data-msg="Entrez votre prénom." />
                 <div class="validation"></div>
               </div>
               <div class="form-group col-md-6">
-                <input type="text" class="form-control" name="name" id="name" placeholder="Votre nom" data-rule="minlen:0" data-msg="Please enter your name" />
+                <input type="text" class="form-control" name="name" id="name" placeholder="Votre nom" data-rule="minlen:1" data-msg="Entrez votre nom." />
                 <div class="validation"></div>
               </div>
             </div>
-			<div class="form-row">
-              <div class="form-group col-md-3">
-                <input type="text" name="classeSup" class="form-control" id="classeSup" placeholder="Votre classe de sup" data-rule="minlen:0" data-msg="Please enter your classe de sup" />
-                <div class="validation"></div>
-              </div>
-              <div class="form-group col-md-3">
-                <input type="text" class="form-control" name="classeSpe" id="name" placeholder="Votre classe de spé" data-rule="minlen:0" data-msg="Please enter your classe de spé" />
-                <div class="validation"></div>
-              </div>
-			    <div class="form-group col-md-3">
-                <select name="promo" class="form-control">
-					<option value>-- Promo -- </option>
-					{% for i in listePromo %}
-						<option value={{i}}>{{i}}</option>
-					{% endfor %}
-				</select>
-              </div>
-			  <div class="form-group col-md-3">
-					<input id="inputEcoles" list="ecoles" class="form-control">
-					<datalist id="ecoles">
-					<option value="HAHAHAHA"></option>
-					</datalist>
-
-              </div>
-            </div>
-			<div class="form-row">
-				<div class="form-group col-md-6">
-					<input type="email" class="form-control" name="mail" id="mail" placeholder="Votre Email" data-rule="email" data-msg="Please enter a valid email" />
-					<div class="validation"></div>
-				</div>
-				<div class="form-group col-md-6">
-					<input type="password" class="form-control" name="password" id="password" placeholder="Votre mot de passe" data-rule="password" data-msg="Please enter a valid password" />
-					<div class="validation"></div>
-				</div>
-			</div>
 			
+			<div class="form-row">
+              <div class="form-group col-md-6">
+                <input type="email" class="form-control" name="mail" id="mail" placeholder="Votre Email" data-rule="email" data-msg="Entrez un Email valide." />
+					<div class="validation"></div>
+              </div>
+              <div class="form-group col-md-6">
+					<input type="email" class="form-control" name="mail2" id="mail2" placeholder="Confirmez votre Email" data-rule="checkmail"  data-msg="Entrez le même mail !"/>
+					<div class="validation"></div>
+              </div>
+            </div>
+			
+						<div class="form-row">
+              <div class="form-group col-md-6">
+					<input type="password" class="form-control" name="password" id="password" placeholder="Votre mot de passe" data-rule="password" data-msg="Entrez un mot de passe valide." />
+					<div class="validation"></div>
+              </div>
+              <div class="form-group col-md-6">
+					<input type="password" class="form-control" name="password" id="password2" placeholder="Confirmez votre mot de passe" data-rule="checkpassword"  data-msg="Entrez le même mot de passe !" />
+					<div class="validation"></div>
+              </div>
+            </div>
+
 			
             <div class="text-center"><button type="submit">S'inscrire</button></div>
           </form>
@@ -230,33 +216,10 @@
   <script src="{{ url_for('static', filename='lib/owlcarousel/owl.carousel.min.js') }}"></script>
 
   <!-- Contact Form JavaScript File -->
-  <script src="{{ url_for('static', filename='contactform/contactform.js') }}"></script>
+  <script src="{{ url_for('static', filename='registrationForm/registrationForm.js') }}"></script>
 
   <!-- Template Main Javascript File -->
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-  <script>
-	$(document).ready(function(){
-    $('#inputEcoles').on('input', function () {
-		var inputecoles = $('#inputEcoles').val();
-		var urlecoles = 'get/getecoles?input=' + inputecoles
-		//alert(urlecoles);
-		$.ajax(
-		{
-            url: urlecoles,
-            type: 'GET',
-			success: function(data){
-				json = JSON.parse(data);
-				$('#ecoles').empty();
-				for (var x in json.listecole) {
-					$('#ecoles').append('<option value="'+json.listecole[x]+'">'+json.listecole[x]+'</option>');
-				}
-			}
-        });
-    	
-
-    });
-});
-</script>
   
 </body>
 

@@ -2,13 +2,12 @@ jQuery(document).ready(function($) {
   "use strict";
 
   //Contact
-  $('form.contactForm').submit(function() {
+  $('form.registrationForm').submit(function() {
     var f = $(this).find('.form-group'),
       ferror = false,
       emailExp = /^[^\s()<>@,;:\/]+@\w[\w\.-]+\.[a-z]{2,}$/i;
 
     f.children('input').each(function() { // run all inputs
-
       var i = $(this); // current input
       var rule = i.attr('data-rule');
 
@@ -31,6 +30,26 @@ jQuery(document).ready(function($) {
 
           case 'minlen':
             if (i.val().length < parseInt(exp)) {
+              ferror = ierror = true;
+            }
+            break;
+			
+          case 'password':
+			var passw=  /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+            if (!i.val().match(passw)) {
+              ferror = ierror = true;
+            }
+            break;
+			
+          case 'checkmail':
+            if ($("#mail").val() != i.val()) {
+              ferror = ierror = true;
+            }
+            break;
+
+			
+          case 'checkpassword':
+            if ($("#password").val() != i.val()) {
               ferror = ierror = true;
             }
             break;
