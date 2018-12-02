@@ -3,7 +3,8 @@
 Dans le dossier qui contient fapp :
 > Créer un run.py
 
-fromm fapp import app
+from fapp import app
+
 app.run(debug = True)
 
 > Créer un config.py
