@@ -2,6 +2,7 @@ from flask import *
 from flask_login import LoginManager, login_user, login_required
 import pymongo
 from bson.json_util import dumps
+import datetime
 
 app = Flask(__name__)
 app.config.from_object('config')
@@ -40,6 +41,7 @@ def check_login():
             # remember = request.form.get("remember", "no") == "yes"
             if login_user(user):
                 flash("Logged in!")
+                session['mail'] = user.mail
                 return "oui, bravo"
             else:
                 flash("unable to log you in")
@@ -49,27 +51,52 @@ def check_login():
 
 @app.route('/go/', methods=['POST'])
 def inscription():
-    print("incroyable du cul !")
     data = request.form
-    print(data)
     user = models.User()
     user.name = data.get('name')
-    user.prenom = data.get('firstname')
+    user.firstname = data.get('firstname')
     user.mail = data.get('mail')
-    user.classeSup = data.get('classeSup')
-    user.classeSpe = data.get('classeSpe')
-    user.promo = data.get('promo')
+    user.inscription = True
     user.set_password(data.get('password'))
-    user.integration = data.get('integration')
     print(user)
-    return modelbdd.inscriptionUser(user)
+    modelbdd.inscriptionUser(user)
+    return "OK"
+
+
+@app.route('/profil/complete/')
+@login_required
+def profil_complete():
+    user = User.get_by_id(session['mail'])
+    listyears = [i for i in range(datetime.date.today().year, 1950, -1 )]
+    listClasseSup = ["MPSI1","MPSI2","Ma chère unité"]
+    listClasseSpe = ["MP*", "MP2", "On y croit"]
+    return render_template('profilcomplete.html', listyears=listyears, firstname=user.firstname, name=user.name, listClasseSup=listClasseSup, listClasseSpe=listClasseSpe)
+
+
+@app.route('/profil/complete/send', methods=['POST'])
+@login_required
+def profil_complete_form():
+    print("-------------")
+    data = request.form
+    user = User.get_by_id(session['mail'])
+    user.inscription = "validation"
+    classes = [data.get('class1')]
+    if data.get('class2') != "":
+        classes.append(data.get('class2'))
+    if data.get('class3') != "":
+        classes.append(data.get('class3'))
+    prepa = {"start": data.get('anneeEntree'), "end": data.get('anneeSortie'), "classes": classes}
+    user.prepa = prepa
+    db.User.update({"mail": user.mail},user.__dict__)
+    return "OK"
+
 
 
 @app.route('/get/getecoles', methods=['GET'])
 def get_ecoles():
-    inputecole = ".*" + request.args.get('input') +'.*'
+    inputecole = ".*" + request.args.get('input') + '.*'
     print(inputecole)
-    inputecole = {"nom": {'$regex': inputecole,"$options": "i"}}
+    inputecole = {"nom": {'$regex': inputecole, "$options": "i"}}
     print(inputecole)
     results = db.Ecoles.find(inputecole).limit(10)
     listeecole = []

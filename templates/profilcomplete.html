@@ -77,58 +77,75 @@
     <div class="container">
 
         <div class="section-header">
-            <h2>L'inscription</h2>
-            <p>Tout commence quelque part.</p>
+            <h2>Les renseignements (généraux)</h2>
+            <p>Tu as oublié ton putain de nom, {{firstname}} {{name}} ?!</p>
         </div>
-        <center><h5>Vous êtes sur le point de faire le grand saut, nous avons besoin de ces quelques informations pour
-            vous inscrire.</h5></center>
+        <center><h5>Afin d'accéder à la suite, vous aurez besoin de renseigner ces informations :</h5></center>
         <div class="form">
             <div id="sendmessage">Bravo le veau !</div>
-            <div id="errormessage"></div>
-            <form action="" method="post" role="form" class="registrationForm">
+            <div id="errormessage">NON</div>
+            <form action="" method="post" role="form" class="profilcompleteForm">
                 <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <input type="text" name="firstname" class="form-control" id="firstname"
-                               placeholder="Votre prénom" data-rule="minlen:1" data-msg="Entrez votre prénom."/>
+                    <div class="form-group col-md-3">
+                        <center>
+                            <w1>Mon année scolaire d'entrée :</w1>
+                        </center>
+                        <select name="anneeEntree" class="form-control" id="anneeEntree"/>
+                        <option value>-- Année d'entrée --</option>
+                        {% for i in listyears %}
+                        <option value={{i}}>{{i}} - {{i+1}}</option>
+                        {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <center>
+                            <w1>Ma dernière année scolaire :</w1>
+                        </center>
+                        <select name="anneeSortie" id = "anneeSortie" class="form-control" data-rule="anneeSortie"
+                                data-msg="Doit être postérieure à l'année d'entrée !"/>
+                        <option value>-- Année de sortie --</option>
+                        {% for i in listyears %}
+                        <option value={{i}}>{{i}} - {{i+1}}</option>
+                        {% endfor %}
+                        </select>
                         <div class="validation"></div>
                     </div>
-                    <div class="form-group col-md-6">
-                        <input type="text" class="form-control" name="name" id="name" placeholder="Votre nom"
-                               data-rule="minlen:1" data-msg="Entrez votre nom."/>
+                    <div class="form-group col-md-2">
+                        <center>
+                            <w1>Ma classe de 1ère année :</w1>
+                        </center>
+                        <select name="class1" class="form-control" id="class1"/>
+                        <option value>-- 1ère année --</option>
+                        {% for i in listClasseSup %}
+                        <option value={{i}}>{{i}}</option>
+                        {% endfor %}
+                        </select>
                         <div class="validation"></div>
                     </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <input type="email" class="form-control" name="mail" id="mail" placeholder="Votre Email"
-                               data-rule="email" data-msg="Entrez un Email valide."/>
+                    <div class="form-group col-md-2">
+                        <center>
+                            <w1>Ma classe de 2ème année :</w1>
+                        </center>
+                        <select name="class2" class="form-control" id="class2"/>
+                        <option value>-- 2ème année --</option>
+                        {% for i in listClasseSpe %}
+                        <option value={{i}}>{{i}}</option>
+                        {% endfor %}
+                        </select>
                         <div class="validation"></div>
                     </div>
-                    <div class="form-group col-md-6">
-                        <input type="email" class="form-control" name="mail2" id="mail2"
-                               placeholder="Confirmez votre Email" data-rule="checkmail"
-                               data-msg="Entrez le même mail !"/>
+                    <div class="form-group col-md-2">
+                        <center>
+                            <w1>Ma classe de 3ème année :</w1>
+                        </center>
+                        <select name="class3" class="form-control" id="class3"/>
+                        <option value>-- 3ème année --</option>
+                        {% for i in listClasseSpe %}
+                        <option value={{i}}>{{i}}</option>
+                        {% endfor %}
+                        </select>
                         <div class="validation"></div>
                     </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-
-                        <input type="password" class="form-control" name="password" id="password"
-                               placeholder="Votre mot de passe" data-rule="password"
-                               data-msg="Entrez un mot de passe valide."/>
-                        <div class="validation"></div>
-                        <w>Votre mot de passe d'au moins 7 caractères doit contenir une majuscule, une minuscule et un chiffre.</w>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <input type="password" class="form-control" name="password" id="password2"
-                               placeholder="Confirmez votre mot de passe" data-rule="checkpassword"
-                               data-msg="Entrez le même mot de passe !"/>
-                        <div class="validation"></div>
-                    </div>
-
                 </div>
 
 
@@ -235,7 +252,7 @@
 <script src="{{ url_for('static', filename='lib/owlcarousel/owl.carousel.min.js') }}"></script>
 
 <!-- Contact Form JavaScript File -->
-<script src="{{ url_for('static', filename='registrationForm/registrationForm.js') }}"></script>
+<script src="{{ url_for('static', filename='registrationForm/profilcompleteForm.js') }}"></script>
 
 <!-- Template Main Javascript File -->
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>

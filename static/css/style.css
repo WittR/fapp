@@ -46,6 +46,21 @@ h6 {
   color: #0e1b4d;
 }
 
+w{
+	font-family: "Raleway", sans-serif;
+	font-size: 9px;
+	color: #9C1B2C;
+	font-weight: 600;
+	
+}
+
+w1{
+	font-family: "Raleway", sans-serif;
+	font-size: 11px;
+	color: #193598;
+	font-weight: 600;
+	
+}
 .main-page {
   margin-top: 70px;
 }
@@ -1332,8 +1347,8 @@ body.mobile-nav-active #mobile-nav-toggle {
 }
 
 #contact .form #sendmessage {
-  color: #f82249;
-  border: 1px solid #f82249;
+  color: #34A95F;
+  border: 1px solid #34A95F;
   display: none;
   text-align: center;
   padding: 15px;

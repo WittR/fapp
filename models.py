@@ -3,12 +3,14 @@ import pymongo
 from .views import app, db
 from flask_login import LoginManager, UserMixin
 import hashlib
+from bson import json_util
+from bson.json_util import dumps
 
 
 class User(UserMixin):
 
     def __init__(self):
-        self.name = "Random"
+        pass
 
     def check_auth(self):
         check = {'mail': self.mail, 'password': self.password}
@@ -22,8 +24,9 @@ class User(UserMixin):
     def get_by_id(id):
         dbUser = db.User.find_one({"mail": id})
         if dbUser is not None:
+            print(dbUser)
             user = User()
-            user.mail = dbUser['mail']
+            user.__dict__ = dbUser
             user.id = user.mail
             return user
         else:
