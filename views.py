@@ -25,6 +25,7 @@ def login():
     return render_template('login.html')
 
 
+
 @app.route('/authtest/')
 @login_required
 def authtest():
@@ -58,7 +59,6 @@ def inscription():
     user.mail = data.get('mail')
     user.inscription = True
     user.set_password(data.get('password'))
-    print(user)
     modelbdd.inscriptionUser(user)
     return "OK"
 
@@ -67,6 +67,8 @@ def inscription():
 @login_required
 def profil_complete():
     user = User.get_by_id(session['mail'])
+    if user.inscription == "validation":
+        return redirect("/")
     listyears = [i for i in range(datetime.date.today().year, 1950, -1 )]
     listClasseSup = ["MPSI1","MPSI2","Ma chère unité"]
     listClasseSpe = ["MP*", "MP2", "On y croit"]
@@ -76,7 +78,6 @@ def profil_complete():
 @app.route('/profil/complete/send', methods=['POST'])
 @login_required
 def profil_complete_form():
-    print("-------------")
     data = request.form
     user = User.get_by_id(session['mail'])
     user.inscription = "validation"
@@ -91,13 +92,20 @@ def profil_complete_form():
     return "OK"
 
 
+@app.route('/mod/validation/')
+@login_required
+def modPanel():
+    user = User.get_by_id(session['mail'])
+    if(user.mod is None):
+        return redirect("/")
+    results = db.User.find({"inscription": "validation"})
+    return render_template('modPanel.html', classes=user.mod, users=results)
+
 
 @app.route('/get/getecoles', methods=['GET'])
 def get_ecoles():
     inputecole = ".*" + request.args.get('input') + '.*'
-    print(inputecole)
     inputecole = {"nom": {'$regex': inputecole, "$options": "i"}}
-    print(inputecole)
     results = db.Ecoles.find(inputecole).limit(10)
     listeecole = []
     for x in list(results):
@@ -107,7 +115,6 @@ def get_ecoles():
 
 @loginManager.user_loader
 def load_user(user_id):
-    print(user_id)
     return User.get_by_id(user_id)
 
 
