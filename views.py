@@ -17,7 +17,7 @@ from .models import User
 @app.route('/')
 def index():
     listePromo = [i for i in range(200, 225)]
-    return render_template('inscription.html', listePromo=listePromo)
+    return render_template('index.html', listePromo=listePromo)
 
 
 @app.route('/login/')
@@ -140,7 +140,6 @@ def get_ecoles():
     results = db.Ecoles.find(inputecole).limit(10)
     listeecole = []
     for x in list(results):
-        print(x)
         listeecole.append(x['nom'])
     return json.dumps({'status': 'OK', 'listecole': listeecole})
 
