@@ -3,7 +3,6 @@ jQuery(document).ready(function($) {
 
   //Contact
   $('form.profilcompleteForm').submit(function() {
-	  //alert($("#anneeEntree").val() < 2000);
     var f = $(this).find('.form-group'),
       ferror = false,
       emailExp = /^[^\s()<>@,;:\/]+@\w[\w\.-]+\.[a-z]{2,}$/i;
@@ -68,8 +67,8 @@ jQuery(document).ready(function($) {
           rule = rule.substr(pos + 1, rule.length);
         }
 		
-        switch (rule) {				
-          case 'anneesortie':
+        switch (rule) {		
+          case 'anneeSortie':
             if (i.val() < $("#anneeEntree").val()) {
               ferror = ierror = true;
             }
@@ -116,7 +115,7 @@ jQuery(document).ready(function($) {
     else var str = $(this).serialize();
     var action = $(this).attr('action');
     if( ! action ) {
-      action = 'send';
+      action = 'send/';
     }
     $.ajax({
       type: "POST",

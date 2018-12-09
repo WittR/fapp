@@ -90,7 +90,7 @@
                         <center>
                             <w1>Mon année scolaire d'entrée :</w1>
                         </center>
-                        <select name="anneeEntree" class="form-control" id="anneeEntree"/>
+                        <select name="anneeEntree" class="form-control" id="anneeEntree" onchange="change()"/>
                         <option value>-- Année d'entrée --</option>
                         {% for i in listyears %}
                         <option value={{i}}>{{i}} - {{i+1}}</option>
@@ -101,8 +101,8 @@
                         <center>
                             <w1>Ma dernière année scolaire :</w1>
                         </center>
-                        <select name="anneeSortie" id = "anneeSortie" class="form-control" data-rule="anneeSortie"
-                                data-msg="Doit être postérieure à l'année d'entrée !"/>
+                        <select name="anneeSortie" id="anneeSortie" class="form-control" data-rule="anneeSortie"
+                                data-msg="Doit être postérieure à l'année d'entrée !" onchange="change()"/>
                         <option value>-- Année de sortie --</option>
                         {% for i in listyears %}
                         <option value={{i}}>{{i}} - {{i+1}}</option>
@@ -110,7 +110,9 @@
                         </select>
                         <div class="validation"></div>
                     </div>
-                    <div class="form-group col-md-2">
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-2" id="div1" style="display: none;">
                         <center>
                             <w1>Ma classe de 1ère année :</w1>
                         </center>
@@ -122,7 +124,7 @@
                         </select>
                         <div class="validation"></div>
                     </div>
-                    <div class="form-group col-md-2">
+                    <div class="form-group col-md-2" style="display: none;" id="div2">
                         <center>
                             <w1>Ma classe de 2ème année :</w1>
                         </center>
@@ -134,12 +136,24 @@
                         </select>
                         <div class="validation"></div>
                     </div>
-                    <div class="form-group col-md-2">
+                    <div class="form-group col-md-2" style="display: none;" id="div3">
                         <center>
                             <w1>Ma classe de 3ème année :</w1>
                         </center>
                         <select name="class3" class="form-control" id="class3"/>
                         <option value>-- 3ème année --</option>
+                        {% for i in listClasseSpe %}
+                        <option value={{i}}>{{i}}</option>
+                        {% endfor %}
+                        </select>
+                        <div class="validation"></div>
+                    </div>
+                    <div class="form-group col-md-2" style="display: none;" id="div4">
+                        <center>
+                            <w1>Ma classe de 4ème année :</w1>
+                        </center>
+                        <select name="class3" class="form-control" id="class3"/>
+                        <option value>-- 4ème année --</option>
                         {% for i in listClasseSpe %}
                         <option value={{i}}>{{i}}</option>
                         {% endfor %}
@@ -252,10 +266,40 @@
 <script src="{{ url_for('static', filename='lib/owlcarousel/owl.carousel.min.js') }}"></script>
 
 <!-- Contact Form JavaScript File -->
-<script src="{{ url_for('static', filename='registrationForm/profilcompleteForm.js') }}"></script>
+<script src="{{ url_for('static', filename='registrationForm/profilcompleteForm3.js') }}"></script>
 
 <!-- Template Main Javascript File -->
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+<script> function change() {
+            $entree = $('#anneeEntree').val();
+            $sortie = $('#anneeSortie').val();
+            if($entree != "" && $sortie != ""){
+                if($sortie >= $entree){
+                    $scolarite = Math.min($sortie-$entree+2,5);
+                    for(i=1; i <= $scolarite; i++){
+                    $div = "div" + i;
+                    document.getElementById($div).style = "";
+                    }
+                    for(i=$scolarite; i <= 5; i++){
+                    $div = "div" + i;
+                    document.getElementById($div).style = "display: none;";
+                    }
+                }
+                else{
+                 for(i=1; i <= 4; i++){
+                    $div = "div" + i;
+                    document.getElementById($div).style = "display: none;";
+                    }
+                }
+
+            }
+          }
+
+
+
+
+</script>
 
 </body>
 

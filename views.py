@@ -25,7 +25,6 @@ def login():
     return render_template('login.html')
 
 
-
 @app.route('/authtest/')
 @login_required
 def authtest():
@@ -38,11 +37,13 @@ def check_login():
         user = User()
         user.mail = request.form["email"]
         user.set_password(request.form["password"])
-        if user.check_auth() and user.is_active:
+        p= user.check_auth()
+        user._id = p[1]
+        if p[0] and user.is_active:
             # remember = request.form.get("remember", "no") == "yes"
             if login_user(user):
                 flash("Logged in!")
-                session['mail'] = user.mail
+                session['id'] = p[1]
                 return "oui, bravo"
             else:
                 flash("unable to log you in")
@@ -66,40 +67,70 @@ def inscription():
 @app.route('/profil/complete/')
 @login_required
 def profil_complete():
-    user = User.get_by_id(session['mail'])
+    user = User.get_by_id(session['id'])
     if user.inscription == "validation":
         return redirect("/")
-    listyears = [i for i in range(datetime.date.today().year, 1950, -1 )]
-    listClasseSup = ["MPSI1","MPSI2","Ma chère unité"]
+    listyears = [i for i in range(datetime.date.today().year, 1950, -1)]
+    listClasseSup = ["MPSI1", "MPSI2", "Ma chère unité"]
     listClasseSpe = ["MP*", "MP2", "On y croit"]
-    return render_template('profilcomplete.html', listyears=listyears, firstname=user.firstname, name=user.name, listClasseSup=listClasseSup, listClasseSpe=listClasseSpe)
+    return render_template('profilcomplete.html', listyears=listyears, firstname=user.firstname, name=user.name,
+                           listClasseSup=listClasseSup, listClasseSpe=listClasseSpe)
 
 
-@app.route('/profil/complete/send', methods=['POST'])
+@app.route('/profil/complete/send/', methods=['POST'])
 @login_required
 def profil_complete_form():
     data = request.form
-    user = User.get_by_id(session['mail'])
+    user = User.get_by_id(session['id'])
     user.inscription = "validation"
-    classes = [data.get('class1')]
+    classes = []
+    classesAValide = [data.get('class1')]
     if data.get('class2') != "":
-        classes.append(data.get('class2'))
+        classesAValide.append(data.get('class2'))
     if data.get('class3') != "":
-        classes.append(data.get('class3'))
-    prepa = {"start": data.get('anneeEntree'), "end": data.get('anneeSortie'), "classes": classes}
+        classesAValide.append(data.get('class3'))
+    prepa = {"start": data.get('anneeEntree'), "end": data.get('anneeSortie'), "classes":classes}
     user.prepa = prepa
-    db.User.update({"mail": user.mail},user.__dict__)
+    user.aValider = classesAValide
+    db.User.update({"mail": user.mail}, user.__dict__)
     return "OK"
 
 
 @app.route('/mod/validation/')
 @login_required
 def modPanel():
-    user = User.get_by_id(session['mail'])
-    if(user.mod is None):
+    user = User.get_by_id(session['id'])
+    if (user.mod is None):
         return redirect("/")
     results = db.User.find({"inscription": "validation"})
-    return render_template('modPanel.html', classes=user.mod, users=results)
+    classes = {}
+    for x in results:
+        for y in x["aValider"]:
+            if y in classes.keys():
+                classes[y].append(x)
+            else:
+                l = []
+                l.append(x)
+                classes[y] = l
+    keys = list(classes.keys())
+    return render_template('modPanel.html', classes=user.mod, listValid=classes, classesKeys=keys)
+
+
+@app.route('/mod/validate', methods=['POST'])
+def mod_validate():
+    data = request.form
+    print(data)
+    print(data.get('id'))
+    print(User.get_by_id(id))
+    return "oui"
+
+
+@app.route('/mod/invalidate', methods=['POST'])
+def mod_invalidate():
+    data = request.form
+    print(data.get('id'))
+    print(User.get_by_id(id))
+    return "non"
 
 
 @app.route('/get/getecoles', methods=['GET'])
