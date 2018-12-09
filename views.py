@@ -28,7 +28,7 @@ def login():
 @app.route('/authtest/')
 @login_required
 def authtest():
-    return render_template('authtest.html')
+    return render_template('index.html')
 
 
 @app.route('/login/go/', methods=['POST'])
@@ -140,6 +140,7 @@ def get_ecoles():
     results = db.Ecoles.find(inputecole).limit(10)
     listeecole = []
     for x in list(results):
+        print(x)
         listeecole.append(x['nom'])
     return json.dumps({'status': 'OK', 'listecole': listeecole})
 

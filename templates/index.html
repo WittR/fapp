@@ -238,7 +238,7 @@
 	$(document).ready(function(){
     $('#inputEcoles').on('input', function () {
 		var inputecoles = $('#inputEcoles').val();
-		var urlecoles = 'get/getecoles?input=' + inputecoles
+		var urlecoles = '/get/getecoles?input=' + inputecoles
 		//alert(urlecoles);
 		$.ajax(
 		{
