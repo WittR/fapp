@@ -17,7 +17,7 @@ from .models import User
 @app.route('/')
 def index():
     listePromo = [i for i in range(200, 225)]
-    return render_template('inscription.html', listePromo=listePromo)
+    return render_template('index.html', listePromo=listePromo)
 
 
 @app.route('/login/')
