@@ -140,7 +140,6 @@ def get_ecoles():
     results = db.Ecoles.find(inputecole).limit(10)
     listeecole = []
     for x in list(results):
-        print(x)
         listeecole.append(x['nom'])
     return json.dumps({'status': 'OK', 'listecole': listeecole})
 
