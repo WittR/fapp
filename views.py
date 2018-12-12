@@ -2,6 +2,7 @@ from flask import *
 from flask_login import LoginManager, login_user, login_required
 import pymongo
 from bson.json_util import dumps
+from bson import ObjectId
 import datetime
 
 app = Flask(__name__)
@@ -37,7 +38,7 @@ def check_login():
         user = User()
         user.mail = request.form["email"]
         user.set_password(request.form["password"])
-        p= user.check_auth()
+        p = user.check_auth()
         user._id = p[1]
         if p[0] and user.is_active:
             # remember = request.form.get("remember", "no") == "yes"
@@ -84,14 +85,18 @@ def profil_complete_form():
     user = User.get_by_id(session['id'])
     user.inscription = "validation"
     classes = []
-    classesAValide = [data.get('class1')]
+    anneeEntree = int(data.get('anneeEntree'))
+    classesAValider = {str(anneeEntree): data.get('class1')}
     if data.get('class2') != "":
-        classesAValide.append(data.get('class2'))
+        anneeEntree += 1
+        classesAValider[str(anneeEntree)] = data.get('class2')
     if data.get('class3') != "":
-        classesAValide.append(data.get('class3'))
-    prepa = {"start": data.get('anneeEntree'), "end": data.get('anneeSortie'), "classes":classes}
-    user.prepa = prepa
-    user.aValider = classesAValide
+        anneeEntree += 1
+        classesAValider[str(anneeEntree)] = data.get('class3')
+    if data.get('class4') != "":
+        anneeEntree += 1
+        classesAValider[str(anneeEntree)] = data.get('class4')
+    user.aValider = classesAValider
     db.User.update({"mail": user.mail}, user.__dict__)
     return "OK"
 
@@ -102,34 +107,53 @@ def modPanel():
     user = User.get_by_id(session['id'])
     if (user.mod is None):
         return redirect("/")
-    results = db.User.find({"inscription": "validation"})
+    query = []
+    classesMod = []
     classes = {}
-    for x in results:
-        for y in x["aValider"]:
-            if y in classes.keys():
-                classes[y].append(x)
-            else:
-                l = []
-                l.append(x)
-                classes[y] = l
+    for classe in user.mod:
+        classesMod.append(classe)
+        for annee in user.mod[classe]:
+            results = db.User.find({"aValider." + annee: classe})
+            classes[classe] = results
     keys = list(classes.keys())
-    return render_template('modPanel.html', classes=user.mod, listValid=classes, classesKeys=keys)
+    return render_template('modPanel.html', classes=classesMod, listValid=classes, classesKeys=keys)
 
 
 @app.route('/mod/validate', methods=['POST'])
 def mod_validate():
+    modo = User.get_by_id(session['id'])
     data = request.form
-    print(data)
-    print(data.get('id'))
-    print(User.get_by_id(id))
+    cible = User.get_by_id(data.get('id'))
+    classe = data.get('classe')
+    for annee in modo.mod[classe]:
+        cible.aValider.pop(annee)
+        if hasattr(cible, 'classes'):
+            cible.classes[annee] = classe
+        else:
+            cible.classes = {annee: classe}
+    print("Validation" + classe)
+    print(cible.__dict__)
+    print({"_id": cible.id})
+    db.User.update({"_id": ObjectId(cible.id)}, cible.__dict__)
+    redirect("/mod/validation/")
     return "oui"
 
 
 @app.route('/mod/invalidate', methods=['POST'])
 def mod_invalidate():
+    modo = User.get_by_id(session['id'])
     data = request.form
-    print(data.get('id'))
-    print(User.get_by_id(id))
+    cible = User.get_by_id(data.get('id'))
+    classe = data.get('classe')
+    for annee in modo.mod[classe]:
+        cible.aValider.pop(annee)
+        if hasattr(cible, 'nonValide'):
+            cible.nonValide[annee] = classe
+        else:
+            cible.nonValide = {annee: classe}
+    print("nonValidation" + classe)
+    print(cible.__dict__)
+
     return "non"
 
 

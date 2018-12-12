@@ -36,7 +36,7 @@ class User(UserMixin):
 
     @staticmethod
     def get_by_id(id):
-        print("'" + id + "'")
+        print("'" + str(id) + "'")
         dbUser = db.User.find_one({"_id": ObjectId(id)})
         print(dbUser is not None)
         if dbUser is not None:
