@@ -2,6 +2,7 @@ from flask import *
 from flask_login import LoginManager, login_user, login_required
 import pymongo
 from bson.json_util import dumps
+from bson import ObjectId
 import datetime
 
 app = Flask(__name__)
@@ -120,18 +121,39 @@ def modPanel():
 
 @app.route('/mod/validate', methods=['POST'])
 def mod_validate():
+    modo = User.get_by_id(session['id'])
     data = request.form
-    print(data)
-    print(data.get('id'))
-    print(User.get_by_id(id))
+    cible = User.get_by_id(data.get('id'))
+    classe = data.get('classe')
+    for annee in modo.mod[classe]:
+        cible.aValider.pop(annee)
+        if hasattr(cible, 'classes'):
+            cible.classes[annee] = classe
+        else:
+            cible.classes = {annee: classe}
+    print("Validation" + classe)
+    print(cible.__dict__)
+    print({"_id": cible.id})
+    db.User.update({"_id": ObjectId(cible.id)}, cible.__dict__)
+    redirect("/mod/validation/")
     return "oui"
 
 
 @app.route('/mod/invalidate', methods=['POST'])
 def mod_invalidate():
+    modo = User.get_by_id(session['id'])
     data = request.form
-    print(data.get('id'))
-    print(User.get_by_id(id))
+    cible = User.get_by_id(data.get('id'))
+    classe = data.get('classe')
+    for annee in modo.mod[classe]:
+        cible.aValider.pop(annee)
+        if hasattr(cible, 'nonValide'):
+            cible.nonValide[annee] = classe
+        else:
+            cible.nonValide = {annee: classe}
+    print("nonValidation" + classe)
+    print(cible.__dict__)
+
     return "non"
 
 

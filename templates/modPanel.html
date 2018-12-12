@@ -101,13 +101,15 @@
                 <div class="row schedule-item">
                     <div class="col-md-1">
                         <input type="image" src="{{ url_for('static', filename='img/CrossValid.png')}}"
-                               onclick="validUser('{{user['_id']}}')"/>
+                               onclick="validUser('{{user['_id']}}','{{classe}}')"/>
                         <input type="image" src="{{ url_for('static',  filename='img/CrossInvalid.png')}}"
-                               onclick="invalidUser('{{user['_id']}}')"/>
+                               onclick="invalidUser('{{user['_id']}}','{{classe}}')"/>
                     </div>
 
                     <div class="col-md-10">
                         <h4>{{user['name'] + " " + user['firstname']}}</h4>
+                        <p>{%for i in user['aValider']%} • <b> {{i + ": "}}</b>{{user['aValider'][i]}} </br>{%endfor%}
+                        </p>
                     </div>
                 </div>
                 {% endfor %}
@@ -220,34 +222,37 @@
 <!-- Template Main Javascript File -->
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 <script>
-	function validUser(id) {
-		alert(id);
+	function validUser(id,classe) {
 		action = '/mod/validate';
     	$.ajax(
 		{
             url: action,
             type: 'POST',
             dataType:'json',
-            data: ({id: id})
+            data: ({id: id, classe: classe})
 
         });
 
     }
 
 
-function invalidUser(id) {
-		alert(id);
+function invalidUser(id, classe) {
 		action = '/mod/invalidate';
     		$.ajax(
 		    {
             url: action,
             type: 'POST',
             dataType:'json',
-            data: ({id: id})
+            data: ({id: id,classe: classe})
         });
 
 
     }
+
+
+
+
+
 
 
 
